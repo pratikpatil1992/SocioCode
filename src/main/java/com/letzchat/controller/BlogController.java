@@ -1,4 +1,4 @@
-package com.coding.SocioCode.controller;
+package com.letzchat.controller;
 
 import java.util.Date;
 import java.util.List;
@@ -15,25 +15,22 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.letzchat.Collaboration.dao.BlogDAO;
-import com.letzchat.Collaboration.model.Blog;
+import com.letzchat.dao.BlogDAO;
+import com.letzchat.model.Blog;
+import com.letzchat.model.User;
 
 @RestController
 public class BlogController {
-
-	private static Logger log = LoggerFactory.getLogger(BlogController.class);
-	
-	@Autowired
-	private Blog blog;
-	
+	private static Logger log = LoggerFactory.getLogger(BlogController.class);	
 	@Autowired
 	private BlogDAO blogDAO;
-
+	@Autowired
+	private Blog blog;	
+	
 	@GetMapping("/blogs")
-	public ResponseEntity< List<Blog>> getAllBlog()
+	public ResponseEntity<List<Blog>> getAllBlogs()
 	{
-		List<Blog> blogList =  blogDAO.list();
-		
+		List<Blog> blogList =  blogDAO.list();	
 		//ResponseEntity:  we can send the data + HTTP status codes + error message
 		// like 200 - success
 		// 404 - page not found
@@ -67,21 +64,18 @@ public class BlogController {
 	@PostMapping("/createblog/")
 	public Blog createBlog(@RequestBody Blog newBlog)
 	{
-		log.debug("Calling createBlog method ");
-		//before creating user, check whether the id exist in the db or not
-		
+		log.debug("Calling createblog method ");
+		System.out.println("inside createblog");
 		blog = blogDAO.get(newBlog.getId());
 		if( blog ==null)
 		{
-			log.debug("User does not exist. Trying to create new user");
+			log.debug("Blog does not exist. Trying to create new blog");
 			//id does not exist
 			
-			//blog.setDateTime(new Date());
 			blogDAO.save(newBlog);
 			//NLP - NullPointerException
 			newBlog.setErrorCode("200");
-			newBlog.setErrorMessage("Thank you For registering.");
-			
+			newBlog.setErrorMessage("Thank you for writing a blog.");
 		}
 		else
 		{
@@ -96,7 +90,6 @@ public class BlogController {
 	}
 	
 	@PostMapping("/updateBlog/")
-	
 	public Blog updateBlog(@RequestBody Blog updateBlog)
 	{
 		
@@ -129,7 +122,7 @@ public class BlogController {
 		log.debug("DeleteBlog Method Start");
 		blog=blogDAO.get(id);
 		
-	    if(	blogDAO.get(id)  ==null)
+	    if(	blogDAO.get(id)==null)
 	    {
 	    	blog.setErrorCode("404");
 	    	blog.setErrorMessage("Could not delete.  Blog does not exist with this id " + id);
@@ -179,9 +172,6 @@ public class BlogController {
 		else 
 		{
 
-			blog.setStatus(status);
-			blog.setReason(reason);
-			
 			blogDAO.update(blog);
 			
 			blog.setErrorCode("200");
