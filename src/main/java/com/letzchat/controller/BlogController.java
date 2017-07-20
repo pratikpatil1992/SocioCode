@@ -14,19 +14,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.letzchat.dao.BlogDAO;
 import com.letzchat.model.Blog;
 import com.letzchat.model.User;
-
 @RestController
 public class BlogController {
 	private static Logger log = LoggerFactory.getLogger(BlogController.class);	
 	@Autowired
 	private BlogDAO blogDAO;
 	@Autowired
-	private Blog blog;	
-	
+	private Blog blog;		
 	@GetMapping("/blogs")
 	public ResponseEntity<List<Blog>> getAllBlogs()
 	{

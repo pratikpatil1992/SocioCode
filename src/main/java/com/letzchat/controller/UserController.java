@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,7 +56,7 @@ public class UserController {
 		{
 			log.debug("Starting of the method getUserByID");
 			log.info("Trying to get userdetails of the id " + id);
-			user = userDAO.get(id);
+			user = userDAO.getUser(id);
 			
 			if(user==null)
 			{
@@ -93,6 +94,7 @@ public class UserController {
 						user.setErrorCode("200");
 						user.setErrorMessage("You have successfully logged in.");
 						user.setIsOnline('Y');
+						userDAO.update(user);
 						log.debug("->->->->Valid Credentials");
 						session.setAttribute("loggedInUserID", user.getId());
 						session.setAttribute("loggedInUserRole", user.getRole());
@@ -182,22 +184,22 @@ public class UserController {
 		}	
 		
 		@PostMapping("/setimage/{id}")
-		public User user(@PathVariable("id") String id, @RequestBody MultipartFile file, HttpServletRequest request)
+		public User user(@PathVariable("id") String id, @RequestParam("file") MultipartFile[] file, HttpServletRequest request)
 		{
 			User user=userDAO.get(id);
-			System.out.println(file);
-			userDAO.storeFile(file, request);
-			user.setImagepath(file.getName());
+			System.out.println(file[0]);
+			userDAO.storeFile(file[0], request);
+			user.setImagepath(file[0].getOriginalFilename());
 			if (userDAO.update(user))
-	    	  {
-	    		  user.setErrorCode("200");
-	  	    	  user.setErrorMessage("Successfully uploaded");
-	    	  }
-	    	  else
-	    	  {
-	    	    	user.setErrorCode("404");
-	    	    	user.setErrorMessage("Could not upload");
-	    	  }
+	    	{
+				user.setErrorCode("200");
+	  	    	user.setErrorMessage("Successfully uploaded");
+	    	}
+	    	else
+	    	{
+	    		user.setErrorCode("404");
+	    	    user.setErrorMessage("Could not upload");
+	    	}
 			return user;
 		}
 			
