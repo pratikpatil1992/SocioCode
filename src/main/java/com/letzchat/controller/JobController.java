@@ -178,4 +178,13 @@ public class JobController {
 
 	}
 	
+	@PostMapping("/searchjobs/")
+	public ResponseEntity<List<Job>> searchjobs(@RequestBody String title)
+	{
+		
+		List<Job> jobList =  jobDAO.searchlist(title);
+		return new ResponseEntity<List<Job>>(jobList, HttpStatus.OK);
+	}
+	
+	
 }

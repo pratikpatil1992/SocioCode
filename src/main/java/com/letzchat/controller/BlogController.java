@@ -1,6 +1,5 @@
 package com.letzchat.controller;
 
-import java.util.Date;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -16,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.letzchat.dao.BlogDAO;
 import com.letzchat.model.Blog;
-import com.letzchat.model.User;
+
 @RestController
 public class BlogController {
 	private static Logger log = LoggerFactory.getLogger(BlogController.class);	
@@ -177,6 +176,14 @@ public class BlogController {
 		log.debug("Ending of the method updateStatus");
 		return blog;
 
+	}
+	
+	@PostMapping("/searchblogs/")
+	public ResponseEntity<List<Blog>> searchblogs(@RequestBody String title)
+	{
+		
+		List<Blog> blogList =  blogDAO.searchlist(title);
+		return new ResponseEntity<List<Blog>>(blogList, HttpStatus.OK);
 	}
 	
 }
